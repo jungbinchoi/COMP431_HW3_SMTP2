@@ -5,29 +5,35 @@
 import sys
 
 
+# Globals
+string: str = ''
+value: str = ''
+index: int = 0
+reverse: str = ''
+forward: str = []
+
+
 def main():
+    global string, value, index, reverse, forward
     try:
         file_name: str = sys.argv[1]
-        text_file = open(file_name, "rt")
+        text_file = open(file_name, 'rt')
         response: str = ''
         code: str = ''
         data: bool = False
-        line: str = ' '
-
         for line in text_file:
             response = ''
-
             if (len(line) >= 5) and (line[0:5] == "From:"):
                 if data:
                     sys.stderr.write(".\n")
                     response = sys.stdin.readline()
                     code = response[:3]
                     data = False
-                    sys.stderr.write(response)
-                    if code == "250" or code == "354":
+                    if code != "250" or code != "354":
                         pass
                     else:
                         raise EOFError()
+                    sys.stderr.write(response)
 
                 sys.stderr.write("MAIL FROM: " + line[6:])
                 response = sys.stdin.readline()
@@ -44,30 +50,22 @@ def main():
 
             if response != '':
                 sys.stderr.write(response)
-                if code == "250" or code == "354":
+                if code != "250" or code != "354":
                     pass
                 else:
                     raise EOFError()
 
-    except EOFError:
+    except (EOFError, IndexError):
         if data:
             sys.stderr.write(".\n")
             response = sys.stdin.readline()[:3]
             sys.stderr.write(response)
         sys.stderr.write("QUIT\n")
         return
-
-    except StopIteration:
-        if data:
-            sys.stderr.write(".\n")
-            response = sys.stdin.readline()[:3]
-            sys.stderr.write(response)
-        sys.stderr.write("QUIT\n")
-        return
-
+    
     except IOError:
         return
-
+    
     finally:
         text_file.close()
 
