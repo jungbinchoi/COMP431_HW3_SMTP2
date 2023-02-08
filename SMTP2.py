@@ -21,11 +21,11 @@ def main():
             next_line = text_file.readline()
 
             if (len(curr_line) >= 5) and (curr_line[0:5] == "From:"):
-                sys.stderr.write("MAIL FROM: " + curr_line[6:])
+                sys.stdout.write("MAIL FROM: " + curr_line[6:])
                 response = sys.stdin.readline()
                 code = response[:3]
             elif (len(curr_line) >= 3) and (curr_line[0:3] == "To:"):
-                sys.stderr.write("RCPT TO: " + curr_line[4:])
+                sys.stdout.write("RCPT TO: " + curr_line[4:])
                 response = sys.stdin.readline()
                 code = response[:3]
 
@@ -37,7 +37,7 @@ def main():
                     else:
                         data = False
                         raise EOFError()
-                    sys.stderr.write("DATA\n")
+                    sys.stdout.write("DATA\n")
                     data = True
                     response = sys.stdin.readline()
                     sys.stderr.write(response)
@@ -49,15 +49,15 @@ def main():
                         raise EOFError()
                     response = ''
                     if (len(next_line) >= 5) and (next_line[0:5] == "From:"):
-                        sys.stderr.write(".\n")
+                        sys.stdout.write(".\n")
                         data = False
                         response = sys.stdin.readline()
                         code = response[:3]
             else:
-                sys.stderr.write(curr_line)
+                sys.stdout.write(curr_line)
 
                 if (len(next_line) >= 5) and (next_line[0:5] == "From:"):
-                    sys.stderr.write(".\n")
+                    sys.stdout.write(".\n")
                     data = False
                     response = sys.stdin.readline()
                     code = response[:3]
@@ -74,10 +74,10 @@ def main():
 
     except (EOFError, IndexError):
         if data:
-            sys.stderr.write(".\n")
+            sys.stdout.write(".\n")
             response = sys.stdin.readline()
             sys.stderr.write(response)
-        sys.stderr.write("QUIT\n")
+        sys.stdout.write("QUIT\n")
 
     except IOError:
         return
